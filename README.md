@@ -10,7 +10,7 @@
 ---
 
 ## 📁 Структура проекта
-
+```bash
 /MAIL
 │
 ├── API/ # Серверная часть 
@@ -26,7 +26,7 @@
 │
 ├── docker-compose.yml # Файл для запуска проекта через Docker
 └── README.md # Документация проекта
-
+```
 
 ---
 
@@ -50,7 +50,8 @@
 
 Перейдите в папку API/ и откройте файл .env. Замените значения на свои при необходимости:
 
- .env.example
+```bash
+ #.env.example
  Данные подключения к PostgreSQL
 DB_USER=your_postgres_user
 DB_HOST=your_postgres_host
@@ -68,9 +69,11 @@ SECRET_KEY=your_secret_key
 # Cайт для получения ключа https://openrouter.ai/qwen/qwen3-235b-a22b:free
 
 OPENAI_API_KEY=your_openai_api_key
+```
 
 ### 2. Отредактируйте файл .env
 
+```bash
 # docker-compose.yml.example
 
 version: '3.8'  # Версия Docker Compose
