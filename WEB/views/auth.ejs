@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <title>Вход — Почтовик</title>
+</head>
+<body>
+
+  <header>
+    <div>Веб-почта</div>
+    <div class="logo">Почтовик</div>
+  </header>
+
+  <main>
+    <form class="login-form" id="login-form" autocomplete="off">
+      <h2>Вход в аккаунт</h2>
+
+      <div class="form-group">
+        <label for="login">Логин</label>
+        <input type="text" id="login" name="login" placeholder="ivan.ivanov" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" placeholder="********" required />
+      </div>
+
+      <div class="message" id="message"></div>
+
+      <button type="submit">Войти</button>
+      
+      <div>
+        <script src="https://unpkg.com/@vkid/sdk@<3.0.0/dist-sdk/umd/index.js"></script>
+        <script type="text/javascript">
+          if ('VKIDSDK' in window) {
+            const VKID = window.VKIDSDK;
+
+            VKID.Config.init({
+              app: 53780951,
+              redirectUrl: 'https://mail.devinsight.su/lk',
+              responseMode: VKID.ConfigResponseMode.Callback,
+              source: VKID.ConfigSource.LOWCODE,
+              scope: '', // Заполните нужными доступами по необходимости
+            });
+
+            const oneTap = new VKID.OneTap();
+
+            oneTap.render({
+              container: document.currentScript.parentElement,
+              showAlternativeLogin: true
+            })
+            .on(VKID.WidgetEvents.ERROR, vkidOnError)
+            .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, function (payload) {
+              const code = payload.code;
+              const deviceId = payload.device_id;
+
+              VKID.Auth.exchangeCode(code, deviceId)
+                .then(vkidOnSuccess)
+                .catch(vkidOnError);
+            });
+          
+            function vkidOnSuccess(data) {
+              // Обработка полученного результата
+            }
+          
+            function vkidOnError(error) {
+              // Обработка ошибки
+            }
+          }
+        </script>
+      </div>
+
+      <p class="bottom-text">
+        Нет аккаунта? <a href="/reg">Регистрация</a>
+      </p>
+    </form>
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $('#login-form').on('submit', function(event) {
+      event.preventDefault();
+
+      const login = $('#login').val().trim();
+      const password = $('#password').val();
+
+      if (!login || !password) {
+        $('#message').text('Введите логин и пароль');
+        return;
+      }
+
+      $.ajax({
+        url: 'http://localhost:3001/auth_post',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ login, password }),
+        success: function() {
+          window.location.href = '/account';
+        },
+        error: function() {
+          $('#message').text('Ошибка входа');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

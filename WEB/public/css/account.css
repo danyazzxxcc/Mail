@@ -1,0 +1,193 @@
+body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+    header {
+      height: 60px;
+      background-color: #3a6ef7;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-weight: 700;
+      font-size: 1.3em;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .logo {
+      font-style: italic;
+      font-size: 1em;
+      opacity: 0.8;
+    }
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+    .sidebar {
+      width: 240px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+    .accounts {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ddd;
+    }
+    .account {
+      padding: 10px 16px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: 600;
+      color: #555;
+      transition: background-color 0.2s, color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .account:hover {
+      background-color: #e6f0ff;
+      color: #005aee;
+    }
+    .account.active {
+      background-color: #005aee;
+      color: white;
+    }
+    .account .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .account.yandex .dot { background: #ffcc00; }
+
+    .folders {
+      padding: 20px 16px;
+      border-bottom: 1px solid #ddd;
+      flex-shrink: 0;
+    }
+    .folder {
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: 600;
+      color: #555;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .folder:hover {
+      background-color: #e6f0ff;
+      color: #005aee;
+    }
+    .folder.active {
+      background-color: #005aee;
+      color: white;
+    }
+
+    .email-list-container {
+      width: 360px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+    .email-filter {
+      padding: 12px 20px;
+      border-bottom: 1px solid #ddd;
+      background: #f7f9fc;
+      display: flex;
+      gap: 12px;
+    }
+    .email-filter button {
+      padding: 6px 14px;
+      background: none;
+      border: 1.5px solid #005aee;
+      border-radius: 6px;
+      color: #005aee;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .email-filter button.active,
+    .email-filter button:hover {
+      background-color: #005aee;
+      color: white; 
+    }
+
+    .email-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .email-item {
+      display: flex;
+      flex-direction: column;
+      padding: 14px 20px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      position: relative;
+    }
+    .email-item:hover {
+      background-color: #f0f4ff;
+    }
+    .email-item.active {
+      background-color: #005aee;
+      color: white;
+    }
+    .email-subject {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .email-from {
+      font-size: 0.9em;
+      color: #777;
+    }
+    .email-date {
+      font-size: 0.8em;
+      color: #aaa;
+      margin-top: 6px;
+      align-self: flex-end;
+    }
+    .email-item.unread .email-subject {
+      font-weight: 900;
+    }
+    .email-item.yandex::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 6px;
+      background-color: #ffcc00;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .email-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .email-header {
+      padding: 20px 32px;
+      border-bottom: 1px solid #ddd;
+      background-color: #005aee;
+      color: white;
+    }
+    .email-header h2 {
+      margin: 0 0 10px 0;
+      font-weight: 700;
+      font-size: 1.6em;
+    }
+    .email-sender {
+      font-size: 1em;
+      opacity: 0.85;
+    }
+    .email-body {
+      padding: 24px 32px;
+      overflow-y: auto;
+      flex: 1;
+      color: #222;
+      font-size: 1.05em;
+      line-height: 1.5em;
+    }

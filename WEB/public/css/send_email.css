@@ -1,0 +1,204 @@
+body {
+    background: #f7f9fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #333;
+}
+
+.email-form {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    max-width: 600px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.email-form h2 {
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #005aee;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.form-group input[type="text"],
+.form-group input[list],
+.form-group textarea {
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1.8px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 40px;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[list]:focus,
+.form-group textarea:focus {
+    border-color: #005aee;
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 150px;
+    line-height: 1.5;
+}
+
+button.send-button,
+button.openModal {
+    cursor: pointer;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background-color 0.3s, color 0.3s;
+    user-select: none;
+    margin-right: 10px;
+}
+
+button.send-button {
+    background-color: #005aee;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(0, 90, 238, 0.5);
+}
+
+button.send-button:hover {
+    background-color: #0041bb;
+    box-shadow: 0 4px 12px rgba(0, 65, 187, 0.7);
+}
+
+button.openModal {
+    background-color: #e0e7ff;
+    color: #005aee;
+    box-shadow: 0 3px 8px rgba(0, 90, 238, 0.3);
+}
+
+button.openModal:hover {
+    background-color: #c3d2ff;
+}
+
+.status-message {
+    margin-top: 15px;
+    font-weight: 600;
+    min-height: 22px;
+    text-align: center;
+}
+
+/* Модальное окно */
+#aiModal {
+    display: none; /* скрыто по умолчанию */
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#aiModalContent {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+#aiModalContent h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #005aee;
+    text-align: center;
+}
+
+#closeModal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #999;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s;
+}
+
+#closeModal:hover {
+    color: #005aee;
+}
+
+#aiInput {
+    width: 410px;
+    min-height: 90px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1.8px solid #ccc;
+    resize: vertical;
+    font-family: inherit;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+}
+
+#aiInput:focus {
+    outline: none;
+    border-color: #005aee;
+}
+
+#generateButton {
+    background-color: #005aee;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 10px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+#generateButton:hover {
+    background-color: #0041bb;
+}
+
+#status {
+    background: #f0f4ff;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: monospace, monospace;
+    white-space: pre-wrap;
+    max-height: 120px;
+    overflow-y: auto;
+    margin-top: 15px;
+    color: #333;
+}

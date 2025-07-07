@@ -1,0 +1,41 @@
+version: '3.8'  # Версия Docker Compose
+
+services:
+  web:
+    build: ./WEB                 # Путь к Dockerfile фронтенда
+    ports:
+      - "3001:3001"              # внешний:внутренний порт (WEB-интерфейс)
+    depends_on:
+      - api
+    networks:
+      - app_network
+
+  api:
+    build: ./API                 # Путь к Dockerfile API
+    depends_on: 
+      - postgres
+    ports:
+      - "3000:3000"              # внешний:внутренний порт (API)
+    env_file:
+      - ./API/.env               # Файл переменных окружения
+    networks:
+      - app_network
+
+  postgres:
+    image: postgres:14           # Образ PostgreSQL
+    restart: always
+    environment:
+      POSTGRES_USER: your_user           # Замените на свой логин
+      POSTGRES_PASSWORD: your_password   # Замените на свой пароль
+      POSTGRES_DB: your_db_name          # Замените на имя базы данных
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Хранение данных
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  pgdata:

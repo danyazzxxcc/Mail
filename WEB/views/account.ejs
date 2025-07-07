@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- DOMPurify для безопасного HTML -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+  <link rel="stylesheet" href="/css/account.css"/>
+
+                    <!-- Yandex.RTB -->
+  <script>window.yaContextCb=window.yaContextCb||[]</script>
+  <script src="https://yandex.ru/ads/system/context.js" async></script>
+  <title>Веб-почта — Почтовик</title>
+</head>
+<body>
+  <header>
+    <div>Веб-почта</div>
+    <div class="logo">Почтовик</div>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <div class="accounts">
+        <div class="account yandex active" data-service="yandex">
+          <div class="dot"></div> Яндекс
+        </div>
+      </div>
+      <div class="folders">
+        <div class="folder active" data-folder="inbox">Входящие</div>
+        <div class="folder" data-folder="sent">Отправленные</div>
+        <div class="folder" data-folder="trash">Удалённые</div>
+        <div class="folder" data-folder="spam">Спам</div>
+      </div>
+      <a class="sending_email" href="/send">Написать письмо</a>
+    </div>
+
+    <div class="email-list-container">
+      <div class="email-filter" id="emailFilter">
+        <button data-filter="all" class="active">Все</button>
+        <button data-filter="read">Прочитанные</button>
+        <button data-filter="unread">Непрочитанные</button>
+      </div>
+      <div class="email-list" id="emailList"></div>
+    </div>
+    <div id="yandex_rtb_R-A-15955788-1"></div>
+
+    <div class="email-view" id="emailView">
+      <div class="email-header" id="emailHeader">
+        <h2>Выберите письмо</h2>
+        <div class="email-sender"></div>
+      </div>
+      <div class="email-body" id="emailBody">
+        Письмо появится здесь после выбора.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.yaContextCb.push(() => {
+        Ya.Context.AdvManager.render({
+            "blockId": "R-A-15955788-1",
+            "renderTo": "yandex_rtb_R-A-15955788-1"
+        })
+    })
+    </script>
+
+  <script>
+    // Получение куки по имени
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    const userId = getCookie('id');
+    let inboxEmails = [];
+
+    // Показ выбранного письма
+    function showEmail(index) {
+      const email = inboxEmails[index];
+      if (email) {
+        document.getElementById("emailHeader").innerHTML = `
+          <h2>${email.subject || '(без темы)'}</h2>
+          <div class="email-sender">От: ${email.from || '(неизвестно)'}</div>
+        `;
+
+        // Очистка HTML письма перед вставкой с помощью DOMPurify
+        const cleanHtml = DOMPurify.sanitize(email.html || '');
+        document.getElementById("emailBody").innerHTML = cleanHtml || email.text || '<em>Письмо пустое</em>';
+      }
+    }
+
+    // Загрузка писем с учетом фильтра
+    function loadInboxEmailsWithFilters() {
+      const status = document.querySelector('#emailFilter .active')?.dataset.filter || 'all';
+
+      // Корректные IMAP критерии
+      let criteria;
+      if (status === 'all') criteria = ['ALL'];
+      else if (status === 'read') criteria = ['SEEN'];
+      else if (status === 'unread') criteria = ['UNSEEN'];
+      else criteria = ['ALL'];
+
+      $.ajax({
+        url: 'http://localhost:3000/api/load_eamail',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ id: userId, criteria }),
+        success: function (response) {
+          inboxEmails = response.emails || [];
+
+          const emailList = document.getElementById('emailList');
+          emailList.innerHTML = '';
+
+          if (!inboxEmails.length) {
+            emailList.innerHTML = '<p style="padding: 20px; color:#777;">Нет писем</p>';
+            document.getElementById("emailHeader").innerHTML = `<h2>Выберите письмо</h2><div class="email-sender"></div>`;
+            document.getElementById("emailBody").innerHTML = 'Письмо появится здесь после выбора.';
+            return;
+          }
+
+          inboxEmails.forEach((email, index) => {
+            const item = document.createElement('div');
+            item.className = 'email-item';
+            if (email.status === 'unread') item.classList.add('unread');
+            if (email.service) item.classList.add(email.service);
+
+            item.innerHTML = `
+              <div class="email-subject">${email.subject || '(без темы)'}</div>
+              <div class="email-from">${email.from || '(неизвестно)'}</div>
+              <div class="email-date">${new Date(email.date).toLocaleString()}</div>
+              <button class="transport_send" data-index="${index}">Переслать</button>
+              <button class="open_email" data-index="${index}">Открыть</button>
+            `;
+
+            emailList.appendChild(item);
+          });
+        },
+        error: () => {
+          document.getElementById('emailList').innerHTML = '<p>Ошибка загрузки писем</p>';
+        }
+      });
+    }
+
+    // Обработчик кликов на кнопках фильтра
+    document.querySelectorAll('#emailFilter button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#emailFilter button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadInboxEmailsWithFilters();
+      });
+    });
+
+    // Делегирование кликов по списку писем
+    document.getElementById('emailList').addEventListener('click', e => {
+      const index = e.target.dataset.index;
+      if (e.target.classList.contains('transport_send')) {
+        const email = inboxEmails[index];
+        const body = email.html || email.text || '';
+        const subject = email.subject || '';
+
+        const $form = $('<form>', {
+          method: 'POST',
+          action: '/send',
+          style: 'display:none'
+        });
+        $form.append($('<input>', { type: 'hidden', name: 'body', value: body }));
+        $form.append($('<input>', { type: 'hidden', name: 'subject', value: subject }));
+        $('body').append($form);
+        $form.submit();
+      }
+
+      if (e.target.classList.contains('open_email')) {
+        showEmail(index);
+      }
+    });
+
+    // Загрузка писем при загрузке страницы
+    document.addEventListener('DOMContentLoaded', loadInboxEmailsWithFilters);
+  </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <title>Регистрация — Почтовик</title>
+</head>
+<body>
+
+  <header>
+    <div>Веб-почта</div>
+    <div class="logo">Почтовик</div>
+  </header>
+
+  <main>
+    <form class="login-form" id="register-form" autocomplete="off">
+      <h2>Регистрация аккаунта</h2>
+
+      <div class="form-group">
+        <label for="login">Логин</label>
+        <input type="text" id="login" name="login" placeholder="ivan.ivanov" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" placeholder="********" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Почта</label>
+        <input type="email" id="email" name="email" placeholder="ivan.ivanov@example.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password_email">Пароль от почты</label>
+        <input type="password" id="password_email" name="password_email" placeholder="********" required />
+      </div>
+
+      <div class="message" id="message"></div>
+
+      <button type="submit">Зарегистрироваться</button>
+
+      <p class="bottom-text">
+        Уже есть аккаунт? <a href="/auth">Вход</a>
+      </p>
+    </form>
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $('#register-form').on('submit', function(event) {
+      event.preventDefault();
+
+      const login = $('#login').val().trim();
+      const password = $('#password').val();
+      const email = $('#email').val().trim();
+      const password_email = $('#password_email').val();
+
+      if (!login || !password || !email || !password_email) {
+        $('#message').text('Заполните все поля').css('color', 'red');
+        return;
+      }
+
+      $.ajax({
+        url: 'http://localhost:3000/api/register',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ login, password, email, password_email }),
+        success: function(response) {
+          $('#message').text(response.message).css('color', response.success ? 'green' : 'red');
+          if (response.success) {
+            setTimeout(() => {
+              window.location.href = '/auth';
+            }, 1500);
+          }
+        },
+        error: function(xhr) {
+          $('#message').text(xhr.responseJSON?.message || 'Ошибка регистрации').css('color', 'red');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

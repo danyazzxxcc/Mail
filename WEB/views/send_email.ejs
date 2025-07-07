@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/send_email.css" />
+  <title>Написать письмо</title>
+</head>
+<body>
+
+  <form class="email-form" id="email-form">
+    <h2>Написать письмо</h2>
+
+    <div class="form-group">
+      <label for="to">Кому:</label>
+      <input list="email-list" id="to" name="to" placeholder="ivan.ivanov@example.ru" required>
+      <datalist id="email-list"></datalist>
+    </div>
+
+    <div class="form-group">
+      <label for="subject">Тема:</label>
+      <input type="text" id="subject" name="subject" placeholder="Тема письма" value="<%= subject %>" required/>
+    </div>
+
+    <div class="form-group">
+      <label for="message">Сообщение:</label>
+      <textarea id="message" name="message" placeholder="Введите текст письма..." required>
+        <%= body %>
+      </textarea>
+    </div>
+
+    <button type="submit" class="send-button">Отправить</button>
+    <button type="button" id="openModal" class="openModal">Сгенерировать текст письма</button>
+
+    <div class="status-message" id="status-message"></div>
+  </form>
+
+  <!-- Модальное окно -->
+  <div id="aiModal">
+    <div id="aiModalContent">
+      <span id="closeModal">&times;</span>
+      <h3>Введите запрос для генерации письма</h3>
+      <textarea id="aiInput" placeholder="Например: Напиши вежливое письмо коллеге о переносе встречи"></textarea>
+      <button id="generateButton">Сгенерировать</button>
+      <pre id="status">Ответ появится тут:</pre>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+
+    // Функция для получения значения cookie
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // Получение параметра из URL, чтобы подставить пересланное письмо
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    $(document).ready(function () {
+      const forwardedBody = getQueryParam('body');
+      const forwardedSubject = getQueryParam('subject');
+
+      if (forwardedSubject) {
+        $('#subject').val('FWD: ' + decodeURIComponent(forwardedSubject));
+      }
+
+      if (forwardedBody) {
+        const quoted = decodeURIComponent(forwardedBody);
+        const wrapped = `\n\n--- Пересылаемое сообщение ---\n${quoted}`;
+        $('#message').val(wrapped);
+      }
+
+      // Загрузка списка email-адресов для подсказок
+      $.ajax({
+        url: `http://localhost:3000/api/email_adress`,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ id: getCookie('id') }),
+        success: function (data){
+          const list = document.getElementById('email-list');
+          data.forEach(email => {
+            const option = document.createElement('option');
+            option.value = email;
+            list.appendChild(option);
+          });
+        },
+        error: function(err){
+          console.error('Ошибка загрузки адресов', err);
+        }
+      });
+    });
+
+    // Отправка письма
+    $('#email-form').submit(function (event) {
+      event.preventDefault();
+
+      const to = $('#to').val();
+      const subject = $('#subject').val();
+      const text = $('#message').val();
+      const id = getCookie('id');
+
+      if (!to || !text) {
+        $('#status-message').text('Заполните все поля').css('color', 'red');
+        return;
+      }
+
+      $.ajax({
+        url: 'http://localhost:3000/api/send_mail',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ id, to, subject, text }),
+        success: function () {
+          $('#status-message').text('Письмо успешно отправлено!').css('color', 'green');
+          $('#email-form')[0].reset();
+          setTimeout(() => { window.location.href = '/lk'; }, 1500);
+        },
+        error: function () {
+          $('#status-message').text('Ошибка при отправке письма.').css('color', 'red');
+        }
+      });
+    });
+
+    // Модальное окно для генерации текста
+    const modal = document.getElementById('aiModal');
+    const openModalBtn = document.getElementById('openModal'); // <-- изменено
+    const closeModal = document.getElementById('closeModal');
+
+    openModalBtn.onclick = () => modal.style.display = 'flex'; // <-- изменено
+    closeModal.onclick = () => modal.style.display = 'none';
+    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+
+
+    // Генерация письма через OpenRouter API
+    const generateButton = document.getElementById('generateButton');
+    const aiInput = document.getElementById('aiInput');
+    const message = document.getElementById('message');
+    const status = document.getElementById('status');
+
+    generateButton.onclick = async () => {
+      const userInput = aiInput.value.trim();
+      status.textContent = "";
+
+      if (!userInput) {
+        status.textContent = "Введите запрос для генерации текста.";
+        return;
+      }
+
+      status.textContent = "Генерация текста...";
+
+      try {
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer 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",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "qwen/qwen3-235b-a22b:free",
+            messages: [{ role: "user", content: [{ type: "text", text: userInput }] }]
+          })
+        });
+
+        const data = await response.json();
+        const generatedText = data.choices?.[0]?.message?.content;
+
+        if (generatedText) {
+          message.value = generatedText;
+          status.textContent = "Текст успешно сгенерирован.";
+          modal.style.display = 'none';
+        } else {
+          status.textContent = "Не удалось получить текст. Попробуйте ещё раз.";
+        }
+
+      } catch (error) {
+        status.textContent = "Ошибка при генерации. Подробности в консоли.";
+        console.error(error);
+      }
+    };
+  </script>
+
+</body>
+</html>

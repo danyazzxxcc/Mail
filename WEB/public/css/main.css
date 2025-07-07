@@ -1,0 +1,108 @@
+/* Общие стили */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f3f3f3;
+  color: #333;
+}
+
+/* Шапка */
+.header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  color: #0077cc;
+  margin: 0;
+}
+
+.nav-link {
+  color: #0077cc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Главный блок */
+.main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.intro {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 60px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.intro-title {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.intro-text {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #0077cc;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background-color: #005fa3;
+}
+
+/* Особенности */
+.features {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.feature {
+  flex: 1 1 300px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.feature h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #0077cc;
+}
+
+.feature p {
+  color: #555;
+}
+
+/* Подвал */
+.footer {
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 14px;
+  color: #777;
+}

@@ -1,0 +1,134 @@
+body, html {
+  margin: 0; padding: 0; height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  height: 60px;
+  background-color: #3a6ef7;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-weight: 700;
+  font-size: 1.3em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.login-form > button {
+  margin-bottom: 20px; /* отступ снизу у кнопки Войти */
+}
+
+.vkid-container {
+  margin-bottom: 20px; /* отступ снизу у блока ВК */
+}
+
+.logo {
+  font-style: italic;
+  font-size: 1em;
+  opacity: 0.8;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-form {
+  background: white;
+  padding: 40px 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-form h2 {
+  margin: 0 0 24px;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #005aee;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.form-group input {
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1.8px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+  font-family: inherit;
+}
+
+.form-group input:focus {
+  border-color: #005aee;
+  outline: none;
+}
+
+.message {
+  margin-bottom: 20px;
+  font-weight: 600;
+  min-height: 22px;
+  text-align: center;
+  color: red;
+}
+
+button {
+  cursor: pointer;
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background-color: #005aee;
+  color: white;
+  box-shadow: 0 3px 8px rgba(0, 90, 238, 0.5);
+  transition: background-color 0.3s, box-shadow 0.3s;
+  user-select: none;
+}
+
+button:hover {
+  background-color: #0041bb;
+  box-shadow: 0 4px 12px rgba(0, 65, 187, 0.7);
+}
+
+.bottom-text {
+  margin-top: 18px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.bottom-text a {
+  color: #005aee;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.bottom-text a:hover {
+  text-decoration: underline;
+}
