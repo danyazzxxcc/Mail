@@ -51,8 +51,8 @@
 Перейдите в папку API/ и откройте файл .env. Замените значения на свои при необходимости:
 
 ```bash
- #.env.example
- Данные подключения к PostgreSQL
+#.env.example
+#Данные подключения к PostgreSQL
 DB_USER=your_postgres_user
 DB_HOST=your_postgres_host
 DB_NAME=your_database_name
